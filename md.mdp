@@ -1,0 +1,61 @@
+; Run control
+integrator    = md           ; Algorithm: Leap-Frog integrator
+dt            = 0.002        ; Timestep: 2 fs
+tinit         = 0            ; Starting time
+nsteps        = 200000       ; Number of steps: 200 000 * 2 fs = 400 000 fs = 400 ps = 0.4 ns
+comm-mode     = Linear
+nstcomm       = 100
+ 
+; Output control
+nstxout            = 5000    ; 100 trr output frames
+nstvout            = 5000
+nstfout            = 5000
+nstxout-compressed = 500     ; 1000 xtc output frames
+nstlog             = 100
+nstcalcenergy      = 100
+nstenergy          = 100     ; 5000 energy output frames
+ 
+; Neighbor searching
+cutoff-scheme = Verlet       ; pair list with buffering                                              
+nstlist       = 20           ; Frequency to update the neighbor list                                 
+ns-type       = grid         ; Make a grid in the box and only check atoms in neighboring grid cells 
+pbc           = xyz          ; Periodic boundary conditions in all directions                        
+ 
+; Electrostatics
+coulombtype    = PME         ; Particle-Mesh-Ewals electrostatics                         
+pme-order      = 4           ; Interpolation order for PME. 4 equals cubic interpolation. 
+fourierspacing = 0.10        ; Fourier-space grid point spacing (lower limit)             
+rcoulomb       = 1.2         ; Distance for the Coulomb cut-off                           
+
+; VdW
+rvdw          = 1.2          ; distance for the Lennard-Jones or cut-off                       
+DispCorr      = EnerPres     ; apply long range dispersion corrections for Energy and Pressure 
+
+; Temperature coupling                 
+tcoupl          = Nose-Hoover          ; Temperature coupling algorithm
+nhchainlength   = 1                    ; longer chains not yet supported (GMX 5.0)
+tc-grps         = Protein Non-Protein  ; Seperate coupling groups
+tau-t           = 2.0  2.0             ; Oszillation time constants per group
+ref-t           = 298  298             ; Reference temperatures (K) per group
+nsttcouple      = 10                   ; Frequency of temperature coupling
+ 
+; Pressure coupling
+pcoupl           = Parrinello-Rahman   ; Pressure coupling algorithm
+tau-p            = 4.0                 ; Oszillation time constant
+pcoupltype       = isotropic           ; Scale box isotropically in all directions
+compressibility  = 4.5e-5              ; Compressibility of water
+ref-p            = 1.0                 ; Reference pressure in bar
+refcoord-scaling = all                 ; Scale all coordinates when scaling the box volume
+nstpcouple       = 10                  ; Pressure coupling frequency
+ 
+; Velocity generation
+gen-vel       = no
+
+; Bonds
+continuation         = yes
+constraints          = all-bonds
+
+constraint-algorithm = LINCS
+lincs-order          = 6
+lincs-iter           = 1
+lincs-warnangle      = 30

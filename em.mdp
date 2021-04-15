@@ -1,0 +1,25 @@
+integrator  = steep     ; Algorithm (steep = steepest descent minimization)
+emtol       = 500.0     ; Stop minimization when the maximum force < 100.0 [kJ/mol/nm]
+emstep      = 0.001     ; Energy step size [nm]
+nsteps      = 10000     ; Maximum number of (minimization) steps to perform
+
+nstxout     = 10        ; number of steps between writing coordinates
+
+; Neighbor searching
+cutoff-scheme           = Verlet  ; pair list with buffering
+nstlist                 = 20      ; Frequency to update the neighbor list
+ns-type                 = grid    ; Make a grid in the box and only check atoms in neighboring grid cells
+verlet-buffer-tolerance = 0.005   ; Sets the maximum allowed error for pair interactions per particle
+pbc                     = xyz     ; Periodic boundary conditions in all directions
+
+; Electrostatics
+coulombtype    = PME          ; Particle-Mesh-Ewals electrostatics
+pme-order      = 4            ; Interpolation order for PME. 4 equals cubic interpolation.
+fourierspacing = 0.10         ; Fourier-space grid point spacing (lower limit)
+rcoulomb       = 1.2          ; Distance for the Coulomb cut-off
+ 
+; VdW
+rvdw           = 1.2          ; distance for the Lennard-Jones or cut-off
+DispCorr       = EnerPres     ; apply long range dispersion corrections for Energy and Pressure
+
+constraints = none

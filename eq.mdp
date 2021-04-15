@@ -1,0 +1,64 @@
+; Preprocessing
+define        = -DPOSRES     ; Position restrain protein heavy atoms
+
+; Run control
+integrator    = md           ; Algorithm: Leap-Frog integrator
+dt            = 0.002        ; Timestep: 2 fs
+tinit         = 0            ; Starting time
+nsteps        = 50000        ; Number of steps: 50 000 * 2 fs = 100 000 fs = 100 ps
+comm-mode     = Linear
+nstcomm       = 100
+
+; Output control
+nstxout            = 5000    ;  10 trr output frames
+nstvout            = 5000
+nstfout            = 5000
+nstxout-compressed = 500     ; 100 xtc output frames
+nstlog             = 100
+nstcalcenergy      = 100
+nstenergy          = 100     ; 500 energy output frames
+ 
+; Neighbor searching
+cutoff-scheme = Verlet       ; pair list with buffering                                              
+nstlist       = 20           ; Frequency to update the neighbor list                                 
+ns-type       = grid         ; Make a grid in the box and only check atoms in neighboring grid cells 
+pbc           = xyz          ; Periodic boundary conditions in all directions                        
+
+; Electrostatics
+coulombtype    = PME         ; Particle-Mesh-Ewals electrostatics                         
+pme-order      = 4           ; Interpolation order for PME. 4 equals cubic interpolation. 
+fourierspacing = 0.10        ; Fourier-space grid point spacing (lower limit)             
+rcoulomb       = 1.2         ; Distance for the Coulomb cut-off                           
+
+; VdW
+rvdw          = 1.2          ; distance for the Lennard-Jones or cut-off                       
+DispCorr      = EnerPres     ; apply long range dispersion corrections for Energy and Pressure 
+
+; Temperature coupling                 
+tcoupl          = v-rescale            ; Temperature coupling algorithm
+tc-grps         = Protein Non-Protein  ; Seperate coupling groups
+tau-t           = 0.1  0.1             ; Coupling relaxation time constants per group
+ref-t           = 298  298             ; Reference temperatures (K) per group
+nsttcouple      = 10                   ; Frequency of temperature coupling
+
+; Pressure coupling
+pcoupl           = berendsen           ; Pressure coupling algorithm
+tau-p            = 1.0                 ; Coupling relaxation time constant
+pcoupltype       = isotropic           ; Scale box isotropically in all directions
+compressibility  = 4.5e-5              ; Compressibility of water
+ref-p            = 1.0                 ; Reference pressure in bar
+refcoord-scaling = all                 ; Scale all coordinates when scaling the box volume
+nstpcouple       = 10                  ; Pressure coupling frequency
+
+; Velocity generation
+gen-vel       = yes                    ; Generate new random velocities from Boltzman distribution
+gen-temp      = 298                    ; At this temperature (K)
+
+; Bonds
+continuation         = no              ; Apply constraints to the start configuration 
+constraints          = all-bonds       ; Constrain all bonds to make larger timestep possible
+
+constraint-algorithm = LINCS           ; Constraint algorithm
+lincs-order          = 6               ; Some contraint algorithm settings
+lincs-iter           = 1
+lincs-warnangle      = 30
